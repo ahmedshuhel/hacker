@@ -1,0 +1,40 @@
+{
+  "name": "hacker",
+  "version": "0.0.1",
+  "description": "An example cil tool written in es6 and use babel transpiler with systemjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "hacker": "main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel": "^5.4.7",
+    "is-iojs": "^1.1.0",
+    "liftoff": "^2.1.0",
+    "systemjs": "^0.16.11",
+    "whacko": "^0.18.1"
+  },
+  "devDependencies": {
+    "babel": "^5.4.7"
+  },
+  "jspm": {
+    "directories": {},
+    "dependencies": {
+      "babel": "jspm:babel@^5.4.7",
+      "is-iojs": "jspm:is-iojs@^1.1.0",
+      "liftoff": "jspm:liftoff@^2.1.0",
+      "path": "github:jspm/nodelibs-path@^0.1.0",
+      "systemjs": "jspm:systemjs@^0.16.11",
+      "whacko": "npm:whacko@^0.18.1"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.0.12",
+      "babel-runtime": "npm:babel-runtime@^5.0.12",
+      "core-js": "npm:core-js@^0.8.1"
+    }
+  }
+}
