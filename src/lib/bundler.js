@@ -1,22 +1,45 @@
-import api from'jspm/api';
+import api from 'jspm/api';
 import whacko from 'whacko';
 import glob from 'glob';
 import fs from 'fs';
 import url from 'url';
 import path from 'path';
 
-
 var pluginName = 'view';
-var loader     = api.Builder().loader;
+var loader = api.Builder().loader;
 
-export function bundleJS(configs) {
-  configs.forEach(function(cfg) {
-    api.bundle(cfg.moduleExpression, cfg.fileName, cfg.options);
-  });
+function bundleJS(moduleExpression, outfile, options) {
+  api.bundle(moduleExpression, outfile, options);
+}
+
+export function bundle(config) {
+
+  var jsConfig = config.js;
+  var templateConfig = config.template;
+
+  Object.keys(jsConfig)
+    .forEach(function(key) {
+      var cfg = jsConfig[key];
+      var outfile = key + '.js';
+      var moduleExpr = cfg.modules.join(' + ');
+      var opt = cfg.options;
+
+      bundleJS(moduleExpr, outfile, opt);
+    });
+
+  Object.keys(templateConfig)
+    .forEach(function(key) {
+      var cfg = templateConfig[key];
+      var outfile = key + '.html';
+      var pattern = cfg.pattern;
+      var options = cfg.options;
+
+      bundleTemplate(pattern, outfile, options);
+    });
 }
 
 
-export function bundleTemplate(pattern, outfile) {
+function bundleTemplate(pattern, outfile, options) {
   var templates = [];
 
   glob
@@ -34,12 +57,28 @@ export function bundleTemplate(pattern, outfile) {
     });
 
   fs.writeFileSync(outfile, templates.join('\n'));
+
+  if (options.inject) {
+    injectLink(outfile);
+  }
+}
+
+function injectLink(outfile) {
+  var baseURL = loader.baseURL.replace(/^file:/, '') + path.sep;
+  var content = fs.readFileSync(baseURL + 'index.html', {
+    encoding: 'utf8'
+  });
+
+  var $ = whacko.load(content);
+
+  $('head').append('<link aurlia-view-bundle rel="import" href="./' + outfile + '">');
+  fs.writeFileSync('text_index.html', $.html());
 }
 
 
 function getTemplateId(file) {
   var baseURL = loader.baseURL.replace(/\\/g, '/') + '/';
-  var address = baseURL +  file;
+  var address = baseURL + file;
   return getModuleName(address, baseURL);
 }
 
@@ -58,7 +97,7 @@ function getModuleName(address, baseURL) {
   var curMatchlength;
   for (var p in loader.paths) {
 
-    var curPath = decodeURI(url.resolve(encodeURI(baseURL),paths[p].replace(/\\/g, '/')));
+    var curPath = decodeURI(url.resolve(encodeURI(baseURL), paths[p].replace(/\\/g, '/')));
 
     var wIndex = curPath.indexOf('*');
     if (wIndex === -1) {
