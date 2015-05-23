@@ -13,11 +13,11 @@
   "license": "ISC",
   "dependencies": {
     "babel": "^5.4.7",
+    "commander": "^2.8.1",
     "glob": "^5.0.9",
-    "is-iojs": "^1.1.0",
     "jspm": "^0.15.6",
     "liftoff": "^2.1.0",
-    "systemjs": "^0.16.11",
+    "minimist": "^1.1.1",
     "whacko": "^0.18.1"
   },
   "devDependencies": {
