@@ -2,6 +2,7 @@
 
 var Liftoff = require('liftoff');
 var argv = require('minimist')(process.argv.slice(2));
+var logger = require('winston');
 
 process.env.INIT_CWD = process.cwd();
 
@@ -22,35 +23,41 @@ var cliPackage = require('./package');
 var versionFlag = argv.v || argv.version;
 
 cli.on('require', function(name) {
-  console.log('Requiring extrnal module');
+  logger.info('Requiring external module: %s', name);
 });
 
 
 cli.launch({
   cwd: argv.cwd,
-  configPath: argv.gulpfile,
+  configPath: argv.Aureliafile,
   require: argv.require
 }, handleCommands);
 
 
 function handleCommands(env) {
-  if (process.cwd() !== env.cwd) {
-    process.chdir(env.cwd);
-    console.log('working directory changed to ' + env.cwd);
-  }
-
-  if (!env.modulePath) {
-    console.log('Local aurelia not found in')
-    process.exit(1);
-  }
+  var aurelia;
 
   require("babel/register");
 
-  require(env.configPath);
+  if (process.cwd() !== env.cwd) {
+    process.chdir(env.cwd);
+    logger.info('Working directory changed to: %s', env.cwd);
+  }
 
-  console.log('using aureliafile ' + env.configPath);
+  if (!env.configPath) {
+    logger.log('warn', 'Aureliafile not found');
+  } else {
+    require(env.configPath);
+    logger.info('Using Aureliafile: %s', env.configPath);
+  }
 
-  var aurelia = require(env.modulePath).inst;
+  if (!env.modulePath) {
+    logger.log('warn', 'Local aurelia installation not found');
+    logger.log('warn', 'Using global installation');
+    aurelia = require('./index');
+  } else {
+    aurelia = require(env.modulePath);
+  }
 
   process.nextTick(function() {
     aurelia.run(process.argv);
