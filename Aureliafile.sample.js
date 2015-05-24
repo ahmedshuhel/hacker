@@ -3,8 +3,9 @@
   // var awesome = require('aurelia-awesome');
   // aurelia.command(awesome); // register command plug in without configuration
   // aurelia.command(awesomeCommand, {}); //register command plugin with cnfiguration
-  // buit in command configuration
 
+  
+  // buit in command configuration
   aurelia.command('bundle', {
     js: {
       app: {

@@ -1,14 +1,26 @@
 import program from 'commander';
 import glob from 'glob';
-import Command from './commands/bundler';
+import logger from 'winston';
+
+import BundleCommand from './commands/bundle';
+import InitCommand from './commands/init';
 
 class Aurelia {
   constructor() {
     this.commands = new Map();
     this.name = 'Aurelia CLI tool';
     this.config = {};
-    this.logger = {};
-    this._initializeBuiltInCommands(); 
+    this.logger = logger;
+  }
+
+  init(config) {
+    this.config = config;
+    let bundle = new BundleCommand(program, this.config, this.logger);
+    let init = new InitCommand(program, this.config, this.logger);
+
+    this.commands[bundle.commandId] = bundle;
+    this.commands[init.commandId] = init;
+
   }
 
   command(...args) {
@@ -16,7 +28,6 @@ class Aurelia {
       let commandId = args[0];
       let config = args[1];
       this.commands[commandId].commandConfig = config;
-      console.log('sdfsdf');
       return;
     }
 
@@ -28,15 +39,7 @@ class Aurelia {
     }
   }
 
-  _initializeBuiltInCommands() {
-    console.log(Command);
-
-    let cmd = new Command(program, this.config, this.logger);
-    this.commands[cmd.commandId] = cmd;
-  }
-
   run(argv) {
-    console.log('sdfsdf');
     program.parse(argv);
   }
 }
