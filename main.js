@@ -26,6 +26,7 @@ cli.on('require', function(name) {
   logger.info('Requiring external module: %s', name);
 });
 
+require("babel/register");
 
 cli.launch({
   cwd: argv.cwd,
@@ -36,8 +37,7 @@ cli.launch({
 
 function handleCommands(env) {
   var aurelia;
-
-  require("babel/register");
+  console.log(env);
 
   if (process.cwd() !== env.cwd) {
     process.chdir(env.cwd);
@@ -60,7 +60,7 @@ function handleCommands(env) {
   }
 
   process.nextTick(function() {
+    aurelia.logger = logger;
     aurelia.run(process.argv);
   });
-
 }
