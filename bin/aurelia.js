@@ -5,6 +5,7 @@ var argv = require('minimist')(process.argv.slice(2));
 var logger = require('winston');
 
 process.env.INIT_CWD = process.cwd();
+var DEV_ENV = parseInt(process.env.AURELIA_CLI_DEV_ENV, 10);
 
 const cli = new Liftoff({
   name: 'hacker',
@@ -26,13 +27,16 @@ cli.on('require', function(name) {
   logger.info('Requiring external module: `%s`', name);
 });
 
-require("babel/register");
+if (DEV_ENV) {
+  require("babel/register");
+} 
 
 cli.launch({
   cwd: argv.cwd,
   configPath: argv.Aureliafile,
   require: argv.require,
-  init_cwd: process.env.INIT_CWD  
+  init_cwd: process.env.INIT_CWD,
+  isDevEnv : DEV_ENV
 }, handleCommands);
 
 
