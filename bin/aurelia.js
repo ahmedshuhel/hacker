@@ -19,7 +19,7 @@ process.once('exit', function(code) {
   }
 });
 
-var cliPackage = require('./package');
+var cliPackage = require('../package');
 var versionFlag = argv.v || argv.version;
 
 cli.on('require', function(name) {
@@ -31,7 +31,8 @@ require("babel/register");
 cli.launch({
   cwd: argv.cwd,
   configPath: argv.Aureliafile,
-  require: argv.require
+  require: argv.require,
+  init_cwd: process.env.INIT_CWD  
 }, handleCommands);
 
 
@@ -45,7 +46,7 @@ function handleCommands(env) {
 
   if (!env.modulePath) {
     logger.log('warn', 'Local aurelia installation not found!');
-    aurelia = require('./index');
+    aurelia = require('../index');
   } else {
     aurelia = require(env.modulePath);
   }

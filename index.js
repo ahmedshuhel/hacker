@@ -1,49 +1,11 @@
-import program from 'commander';
-import glob from 'glob';
-import logger from 'winston';
+var aurelia, DEV_ENV = parseInt(process.env.AURELIA_CLI_DEV_ENV, 10);
 
-import BundleCommand from './commands/bundle';
-import InitCommand from './commands/init';
-
-class Aurelia {
-  constructor() {
-    this.commands = new Map();
-    this.name = 'Aurelia CLI tool';
-    this.config = {};
-    this.logger = logger;
-  }
-
-  init(config) {
-    this.config = config;
-    let bundle = new BundleCommand(program, this.config, this.logger);
-    let init = new InitCommand(program, this.config, this.logger);
-
-    this.commands[bundle.commandId] = bundle;
-    this.commands[init.commandId] = init;
-
-  }
-
-  command(...args) {
-    if (typeof args[0] === 'string') {
-      let commandId = args[0];
-      let config = args[1];
-      this.commands[commandId].commandConfig = config;
-      return;
-    }
-
-    if (typeof args[0] === 'function') {
-      let Cmd = args[0];
-      let c = new Cmd(program, this.config, this.logger);
-      this.commands[c.commandId()] = c;
-      return;
-    }
-  }
-
-  run(argv) {
-    program.parse(argv);
-  }
+if (DEV_ENV) {
+  aurelia = require('./src');
+  console.log('Proudly from src: ' + DEV_ENV);
+} else {
+  aurelia = require('./dist');
+  console.log('Proudly from dist');
 }
 
-var inst = new Aurelia();
-
-export default inst;
+module.exports = aurelia;
