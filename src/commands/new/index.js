@@ -51,8 +51,7 @@ export default class NewCommand {
 
   run(opt) {
     ask(prompts)
-      .then((answer) => {
-
+      .then((answers) => {
         var app = answers.template;
 
         if (!app) {
