@@ -8,7 +8,7 @@ import NewCommand from './commands/new';
 
 class Aurelia {
   constructor() {
-    this.commands = new Map();
+    this.commands = {};
     this.name = 'Aurelia CLI tool';
     this.config = {};
     this.logger = logger;

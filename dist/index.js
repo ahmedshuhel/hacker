@@ -38,7 +38,7 @@ var Aurelia = (function () {
   function Aurelia() {
     _classCallCheck(this, Aurelia);
 
-    this.commands = new Map();
+    this.commands = {};
     this.name = 'Aurelia CLI tool';
     this.config = {};
     this.logger = _winston2['default'];
