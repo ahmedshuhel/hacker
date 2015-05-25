@@ -1,38 +1,44 @@
-describe('installer unit tests', ()=> {
+var expect = require('chai').expect;
+
+describe('installer unit tests', () => {
   var sut;
 
   beforeEach(() => {
-    import sut  from '../src/lib/installer';
+    sut = require('../src/lib/installer');
   });
 
-  it('should console error on unknown repo', (done) => {
-    console.error = createSpy('error');
-
-    sut.installTemplate('blusdlkjwer');
-
-    setTimeout( function() {
-      expect(console.error).toHaveBeenCalledWith('Failed to get latest release info');
-      done();
-    }, 2000);
+  it('should reject with error msg if no tag information available', (done) => {
+    sut.installTemplate('blusdlkjwer')
+      .then((res) => {
+        done();
+      })
+      .catch((msg) => {
+        expect(msg).to.equal('Failed to get latest release info');
+        done();
+      });
   });
 
-  it('should execute callback after installing jspm dependencies', function() {
+  it('should execute callback after installing jspm dependencies', () => {
     var injectr = require('injectr');
 
-    sut = injectr('../lib/installer.js', {
+    sut = injectr('../src/lib/installer/index.js', {
       jspm: {
-        install: function(opt) {
+        configureLoader: (conf) => {
+          return Promise.resolve(true);
+        },
+        dlLoader: (res) => {
+          return Promise.resolve(true);
+        },
+        install: (opt) => {
           return {
-            then: function(cb) {
-              cb();
-            }
+            then: (cb) => cb()
           }
         }
       }
     });
 
-    sut.runJSPMInstall(function() {
-      expect(true).toBe(true);
+    sut.runJSPMInstall(() => {
+      expect(true).to.equal(true);
     });
   });
 });
