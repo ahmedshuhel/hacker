@@ -30,6 +30,10 @@ var _commandsInit = require('./commands/init');
 
 var _commandsInit2 = _interopRequireDefault(_commandsInit);
 
+var _commandsNew = require('./commands/new');
+
+var _commandsNew2 = _interopRequireDefault(_commandsNew);
+
 var Aurelia = (function () {
   function Aurelia() {
     _classCallCheck(this, Aurelia);
@@ -46,9 +50,11 @@ var Aurelia = (function () {
       this.config = config;
       var bundle = new _commandsBundle2['default'](_commander2['default'], this.config, this.logger);
       var init = new _commandsInit2['default'](_commander2['default'], this.config, this.logger);
+      var newCmd = new _commandsNew2['default'](_commander2['default'], this.config, this.logger);
 
       this.commands[bundle.commandId] = bundle;
       this.commands[init.commandId] = init;
+      this.commands[newCmd.commandId] = newCmd;
     }
   }, {
     key: 'command',
